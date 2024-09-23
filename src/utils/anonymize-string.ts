@@ -13,5 +13,4 @@ export const anonymizeEmail = (email: string): string => {
   return `${generateDeterministicString(localPart)}@${domain}`;
 };
 
-
 export default generateDeterministicString;

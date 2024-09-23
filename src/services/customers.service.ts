@@ -1,6 +1,6 @@
 import type { ICustomer } from '../types/customer';
 import { faker } from '@faker-js/faker';
-import {  Customer } from '../models/customer';
+import { Customer } from '../models/customer';
 import { anonymizeCustomer } from './anonymizer.service';
 import mongoose from 'mongoose';
 

@@ -18,7 +18,7 @@ const startApp = async () => {
     setInterval(() => {
       console.log('Interval started');
       generateCustomers();
-    }, 2000);
+    }, 200);
 
     app.listen(PORT, () => {
       console.log(`app is listening on port ${PORT}`);

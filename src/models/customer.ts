@@ -1,5 +1,5 @@
-import mongoose, { mongo, Schema } from "mongoose";
-import { ICustomer } from "../types/customer";
+import mongoose, { mongo, Schema } from 'mongoose';
+import type { ICustomer } from '../types/customer';
 
 const CustomerSchema = new Schema<ICustomer>(
   {
@@ -42,11 +42,11 @@ const CustomerSchema = new Schema<ICustomer>(
       },
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export const Customer = mongoose.model<ICustomer>("customers", CustomerSchema);
+export const Customer = mongoose.model<ICustomer>('customers', CustomerSchema);
 export const AnonymizedCustomer = mongoose.model<ICustomer>(
-  "anonymized_customers",
-  CustomerSchema
+  'anonymized_customers',
+  CustomerSchema,
 ); // Since Customer and Anonymized Customer properties are the same, I didn't create an additional schema

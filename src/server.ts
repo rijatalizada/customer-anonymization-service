@@ -1,24 +1,31 @@
-import express from "express";
-import { connectDB } from "./config/connect";
-import * as dotenv from "dotenv";
+import express from 'express';
+import { connectDB } from './config/connect';
+import * as dotenv from 'dotenv';
 import generateCustomers, {
   watchCustomerChanges,
-} from "./services/customers.service";
+} from './services/customers.service';
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
-connectDB();
+const startApp = async () => {
+  try {
+    await connectDB();
 
-watchCustomerChanges();
+    watchCustomerChanges();
 
-setInterval(() => {
-  console.log("Interval started")
-  generateCustomers();
-}, 2000);
+    setInterval(() => {
+      console.log('Interval started');
+      generateCustomers();
+    }, 2000);
 
+    app.listen(PORT, () => {
+      console.log(`app is listening on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start the app:', error);
+  }
+};
 
-app.listen(PORT, () => {
-  console.log(`app is listening to the port ${PORT}`);
-});
+startApp();

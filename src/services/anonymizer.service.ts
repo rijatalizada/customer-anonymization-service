@@ -1,7 +1,9 @@
-import mongoose from "mongoose";
-import { AnonymizedCustomer, Customer } from "../models/customer";
-import { ICustomer } from "../types/customer";
-import generateDeterministicString from "../utils/anonymize-string";
+import mongoose from 'mongoose';
+import { AnonymizedCustomer, Customer } from '../models/customer';
+import type { ICustomer } from '../types/customer';
+import generateDeterministicString, {
+  anonymizeEmail,
+} from '../utils/anonymize-string';
 
 export const anonymizeCustomer = async (customer: ICustomer) => {
   const session = await mongoose.startSession();
@@ -9,6 +11,7 @@ export const anonymizeCustomer = async (customer: ICustomer) => {
 
   try {
     const anonymizedCustomer = new AnonymizedCustomer({
+      _id: customer._id,
       firstName: generateDeterministicString(customer.firstName),
       lastName: generateDeterministicString(customer.lastName),
       email: anonymizeEmail(customer.email),
@@ -25,12 +28,8 @@ export const anonymizeCustomer = async (customer: ICustomer) => {
     await session.commitTransaction();
   } catch (error) {
     await session.abortTransaction();
+    console.log(error);
   } finally {
     session.endSession();
   }
-};
-
-const anonymizeEmail = (email: string): string => {
-  const [localPart, domain] = email.split("@");
-  return `${generateDeterministicString(localPart)}@${domain}`;
 };

@@ -1,15 +1,15 @@
-import { ICustomer } from "../types/customer";
-import { faker } from "@faker-js/faker";
-import { AnonymizedCustomer, Customer } from "../models/customer";
-import { anonymizeCustomer } from "./anonymizer.service";
-import mongoose from "mongoose";
+import type { ICustomer } from '../types/customer';
+import { faker } from '@faker-js/faker';
+import {  Customer } from '../models/customer';
+import { anonymizeCustomer } from './anonymizer.service';
+import mongoose from 'mongoose';
 
 export const watchCustomerChanges = () => {
   const changeStream = Customer.watch();
-  changeStream.on("change", async (change) => {
+  changeStream.on('change', async (change) => {
     if (
-      change.operationType === "insert" ||
-      change.operationType === "update"
+      change.operationType === 'insert' ||
+      change.operationType === 'update'
     ) {
       const customer = await Customer.findById(change.documentKey._id);
       if (customer) {
@@ -18,6 +18,7 @@ export const watchCustomerChanges = () => {
     }
   });
 };
+
 async function generateCustomers() {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -25,7 +26,7 @@ async function generateCustomers() {
   const customers: ICustomer[] = [];
   const batchSize = Math.floor(Math.random() * 10) + 1;
 
-  console.log(batchSize)
+  console.log(batchSize);
   try {
     for (let i = 0; i < batchSize; i++) {
       const customer: ICustomer = new Customer({
@@ -41,18 +42,16 @@ async function generateCustomers() {
           state: faker.location.state(),
         },
       });
-      
-      console.log(customer)
+
       customers.push(customer);
     }
 
-    console.log("exited loop")
     await Customer.insertMany(customers);
-    console.log("Customers inserted")
+    console.log('Customers inserted');
     await session.commitTransaction();
   } catch (error) {
     session.abortTransaction();
-    console.log(error)
+    console.log(error);
   } finally {
     session.endSession();
   }
